@@ -4,7 +4,7 @@ import './index.css';
 
 function Square(props) {
   return (
-    <button className="square" onClick={props.onClick}>
+    <button className="square" onClick={props.onClick} style={props.style}>
       {props.value}
     </button>
   );
@@ -30,10 +30,26 @@ class Board extends React.Component {
               <div className="board-row">
               {
                 Array(3).fill(0).map((val2, x) => {
+                  let cellNum = y * 3 + x;
+                  let winLine = this.props.winLine;
+
+                  // 勝利ラインに色付けする
+                  let style = {
+                    background: null,
+                  };
+                  if (winLine && winLine.indexOf(cellNum) >= 0) {
+                    console.log("winLine=" + winLine + ' cellNum=' + cellNum);
+                    console.log(winLine.indexOf(cellNum));
+                    style = {
+                      background: "gray"
+                    };
+                  }
+            
                   return (
                     <Square
-                      value={this.props.squares[y * 3 + x]}
-                      onClick={() => this.props.onClick(y * 3 + x)}
+                      value={this.props.squares[cellNum]}
+                      onClick={() => this.props.onClick(cellNum)}
+                      style={style}
                     />
                   );
                 })
@@ -66,6 +82,7 @@ class Game extends React.Component {
       stepNumber: 0,
       xIsNext: true,
       sort: true,
+      winLine: null,
     };
   }
   
@@ -78,6 +95,12 @@ class Game extends React.Component {
     let winLine = retWinner[1];
 
     if (winner || squares[i]) {
+      
+      this.setState({
+        // 勝利ライン色付け用
+        winLine: winLine,
+      });
+      
       return;
     }
     squares[i] = this.state.xIsNext ? 'X' : 'O';
@@ -152,11 +175,13 @@ class Game extends React.Component {
           <Board
             squares={current.squares}
             onClick={(i) => this.handleClick(i)}
+            winLine={winLine}
           />
         </div>
         <div className="game-info">
           <button onClick={() => this.changeSort()}>{sortLabel}</button>
           <div>{status}</div>
+          <div>{winLine}</div>
           <ol reversed={reversed}>{sortedMoves}</ol>
         </div>
       </div>
@@ -183,7 +208,7 @@ function calculateWinner(squares) {
   for (let i = 0; i < lines.length; i++) {
     const [a, b, c] = lines[i];
     if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
-      console.log('win=' + lines[i] + ' ' + squares[a]);
+      // console.log('win=' + lines[i] + ' ' + squares[a]);
       return [squares[a], lines[i]];
     }
   }
