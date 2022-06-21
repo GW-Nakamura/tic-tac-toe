@@ -23,11 +23,11 @@ class Board extends React.Component {
 
   renderSquare2() {
     return (
-      <div>
+      <>
         {
           Array(3).fill(0).map((val, y) => {
             return (
-              <div className="board-row">
+              <div className="board-row" name={y.toString()} key={y.toString()}>
               {
                 Array(3).fill(0).map((val2, x) => {
                   let cellNum = y * 3 + x;
@@ -50,6 +50,8 @@ class Board extends React.Component {
                       value={this.props.squares[cellNum]}
                       onClick={() => this.props.onClick(cellNum)}
                       style={style}
+                      cellNum={cellNum}
+                      key={cellNum.toString()}
                     />
                   );
                 })
@@ -58,15 +60,15 @@ class Board extends React.Component {
             );
           })
         }
-      </div>
+      </>
     )
   }
   
   render() {
     return (
-      <div>
+      <>
         {this.renderSquare2()}
-      </div>
+      </>
     )
   }
 }
@@ -146,7 +148,7 @@ class Game extends React.Component {
       };
       
       return (
-        <li key={move}>
+        <li name={move.toString()} key={move.toString()}>
           <button onClick={() => this.jumpTo(move)} style={style} >{desc}</button>
         </li>
       );
