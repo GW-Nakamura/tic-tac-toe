@@ -21,7 +21,7 @@ function Square(props) {
     //   );
     // }
 
-    renderSquare2(i) {
+    renderSquare2() {
       return (
         <div>
           {
@@ -46,22 +46,10 @@ function Square(props) {
       )
     }
     
-    
     render() {
       return (
         <div>
-          {this.renderSquare2(0)}
-                  
-          {/* <div className="board-row">
-            {this.renderSquare(3)}
-            {this.renderSquare(4)}
-            {this.renderSquare(5)}
-          </div>
-          <div className="board-row">
-            {this.renderSquare(6)}
-            {this.renderSquare(7)}
-            {this.renderSquare(8)}
-          </div> */}
+          {this.renderSquare2()}
         </div>
       )
     }
@@ -77,6 +65,7 @@ function Square(props) {
         }],
         stepNumber: 0,
         xIsNext: true,
+        sort: true,
       };
     }
     
@@ -104,6 +93,12 @@ function Square(props) {
         xIsNext: (step % 2) === 0
       });
     }
+
+    changeSort() {
+      this.setState({
+        sort: !this.state.sort,
+      });
+    }
    
     render() {
       const history = this.state.history;
@@ -118,7 +113,7 @@ function Square(props) {
           'Go to game start';
         
         const style = {
-          fontWeight: (move == this.state.stepNumber) ? 'bold' : 'normal',
+          fontWeight: (move === this.state.stepNumber) ? 'bold' : 'normal',
         };
         
         return (
@@ -135,6 +130,16 @@ function Square(props) {
         status = 'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
       }
       // console.log(history);
+      // console.log(moves);
+      let sortedMoves = [...moves]
+      let sortLabel = '昇順';
+      let reversed = '';
+      if (this.state.sort === true) {
+        sortedMoves = [...moves].reverse()
+        sortLabel = '降順';
+        reversed = 'reversed';
+      }
+
       return (
         <div className="game">
           <div className="game-board">
@@ -144,8 +149,9 @@ function Square(props) {
             />
           </div>
           <div className="game-info">
+            <button onClick={() => this.changeSort()}>{sortLabel}</button>
             <div>{status}</div>
-            <ol>{moves}</ol>
+            <ol reversed={reversed}>{sortedMoves}</ol>
           </div>
         </div>
       );
